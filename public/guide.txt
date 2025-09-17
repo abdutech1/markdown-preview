@@ -1,0 +1,76 @@
+import React, { useState, useEffect } from 'react';
+import { marked } from 'marked'; // Import marked library
+
+// Optional: Add some basic CSS for layout
+import './App.css'; 
+
+function App() {
+  // User Story #5: Default Markdown Content
+  const defaultMarkdown = `
+# Welcome to my Markdown Previewer!
+
+## Sub-heading example
+
+You can find more info at [Google](https://www.google.com).
+
+Inline code example: \`console.log("Hello World");\`
+
+\`\`\`javascript
+function greet(name) {
+  return "Hello, " + name + "!";
+}
+\`\`\`
+
+- List item 1
+- List item 2
+  - Nested list item
+
+> This is a blockquote.
+
+![Alt text for image](https://via.placeholder.com/150 "Placeholder Image")
+
+**Bolded text example**
+`;
+
+  // User Story #3: State to hold the editor content
+  const [editorContent, setEditorContent] = useState(defaultMarkdown);
+  const [previewContent, setPreviewContent] = useState('');
+
+  // Configure marked to handle breaks as per User Story #6 (Optional Bonus)
+  marked.setOptions({
+    breaks: true, // Interprets carriage returns as <br> elements
+    gfm: true,    // GitHub Flavored Markdown
+  });
+
+  // User Story #3 & #6: Update preview when editor content changes
+  // and on initial load
+  useEffect(() => {
+    // User Story #4: Render Markdown as HTML using Marked library
+    setPreviewContent(marked.parse(editorContent));
+  }, [editorContent]); // This effect runs whenever editorContent changes
+
+  // Handler for textarea changes
+  const handleChange = (event) => {
+    setEditorContent(event.target.value);
+  };
+
+  return (
+    <div className="app-container">
+      {/* User Story #1: Textarea element */}
+      <textarea
+        id="editor"
+        value={editorContent}
+        onChange={handleChange}
+        placeholder="Enter your Markdown here..."
+      ></textarea>
+
+      {/* User Story #2: Preview element */}
+      <div
+        id="preview"
+        dangerouslySetInnerHTML={{ __html: previewContent }}
+      ></div>
+    </div>
+  );
+}
+
+export default App;
